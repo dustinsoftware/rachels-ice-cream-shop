@@ -83,7 +83,7 @@ function App() {
 
   // Timer effect
   React.useEffect(() => {
-    if (gameOver || paused) return;
+    if (gameOver || paused || showHome) return;
     if (timer <= 0) {
       setShowOutOfTime(true);
       setMoney((m) => {
@@ -129,7 +129,7 @@ function App() {
     }
     const interval = setInterval(() => setTimer((t) => t - 1), 1000);
     return () => clearInterval(interval);
-  }, [timer, gameOver, round, flavors, toppingsList, customerAvatars, paused]);
+  }, [timer, gameOver, round, flavors, toppingsList, customerAvatars, paused, showHome]);
 
   React.useEffect(() => {
     if (money <= 0) setGameOver(true);
