@@ -60,7 +60,7 @@ function App() {
   const [selectedToppings, setSelectedToppings] = useState<string[]>([]);
   const [money, setMoney] = useState(20);
   const [message, setMessage] = useState("");
-  const [timer, setTimer] = useState(20);
+  const [timer, setTimer] = useState(60);
   const [gameOver, setGameOver] = useState(false);
   const [showWrong, setShowWrong] = useState(false);
   const [correctCount, setCorrectCount] = useState(0);
@@ -79,6 +79,7 @@ function App() {
   // When round changes, update customerNeeds to new round value
   React.useEffect(() => {
     setCustomerNeeds(Array(5).fill(round));
+    setTimer(60 + (round - 1) * 10); // <-- update timer for new round
   }, [round]);
 
   // Timer effect
@@ -94,7 +95,7 @@ function App() {
       setWrongCount((w) => w + 1);
       setTimeout(() => {
         setShowOutOfTime(false);
-        setTimer(20);
+        setTimer(60 + (round - 1) * 10); // <-- update timer reset logic
         setSelectedFlavor(null);
         setSelectedToppings([]);
         setCustomerNeeds((needs) => {
@@ -129,7 +130,16 @@ function App() {
     }
     const interval = setInterval(() => setTimer((t) => t - 1), 1000);
     return () => clearInterval(interval);
-  }, [timer, gameOver, round, flavors, toppingsList, customerAvatars, paused, showHome]);
+  }, [
+    timer,
+    gameOver,
+    round,
+    flavors,
+    toppingsList,
+    customerAvatars,
+    paused,
+    showHome,
+  ]);
 
   React.useEffect(() => {
     if (money <= 0) setGameOver(true);
@@ -188,7 +198,7 @@ function App() {
               },
             },
           ]);
-          setTimer(20); // Reset timer only when customer is satisfied
+          setTimer(60 + (round - 1) * 10); // <-- update timer reset logic
           return [...newNeeds.slice(1), round];
         }
         // Do not reset timer if customer still needs more ice cream
@@ -249,7 +259,7 @@ function App() {
             textShadow: "0 2px 8px #fff8",
           }}
         >
-          Ice Cream Shop Game
+          Rachel's ice cream shop
         </h1>
         <div
           style={{
@@ -263,7 +273,7 @@ function App() {
             textAlign: "center",
           }}
         >
-          Welcome to the Ice Cream Shop Game!
+          Welcome to Rachel's ice cream shop!
           <br />
           <br />
           Serve customers by making their favorite ice cream with the right
@@ -282,7 +292,8 @@ function App() {
           them wrong or run out of time to lose money.
           <br />
           <span style={{ color: "#ff43a1", fontWeight: "bold" }}>⏰</span> You
-          have 20 seconds per ice cream!
+          have <b>1 minute</b> per ice cream, plus <b>10 extra seconds</b> for
+          each new round!
         </div>
         <button
           style={{
@@ -301,7 +312,10 @@ function App() {
             outline: "none",
             transition: "background 0.2s, transform 0.1s",
           }}
-          onClick={() => setShowHome(false)}
+          onClick={() => {
+            setShowHome(false);
+            setTimer(60); // <-- set timer to 60 seconds on game start
+          }}
         >
           Start Game
         </button>
@@ -345,7 +359,7 @@ function App() {
                 setPaused(false);
                 // If timer is 0 or less and overlays are showing, reset timer and overlays
                 if (timer <= 0) {
-                  setTimer(20);
+                  setTimer(60 + (round - 1) * 10);
                   setShowOutOfTime(false);
                   setShowWrong(false);
                   setMessage("");
@@ -546,7 +560,7 @@ function App() {
               setGameOver(false);
               setMoney(20);
               setMessage("");
-              setTimer(20);
+              setTimer(60);
               setShowWrong(false);
               setCorrectCount(0);
               setWrongCount(0);
@@ -697,7 +711,7 @@ function App() {
               textShadow: "0 2px 8px #fff8",
             }}
           >
-            Ice Cream Shop Game
+            Rachel's ice cream shop
           </h1>
           <div
             style={{
